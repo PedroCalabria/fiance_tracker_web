@@ -1,44 +1,32 @@
-import { MoneyDescriptionCard } from '@/app/components/cards/money-description-card'
-import WalletIcon from '@/app/components/icons/wallet-icon'
+import { ChartAreaInteractive } from '@/components/charts/chart-area-interactive';
+import { SectionCards } from '@/components/section-cards';
+import { SiteHeader } from '@/components/site-header';
+import { ChartPieLegend } from '@/components/charts/chart-pie-legend';
+import { ActivityTable } from '@/app/components/activity-table/activity-table';
 
 const GeneralView = () => {
-    const user = "User";
-
     return (
-        <div className="pt-5 pl-5">
-            <div className="mb-6">
-                <h2 className="text-3xl">Welcome, {user}!</h2>
-            </div>
-            <div className="grid grid-cols-18">
-                <div className="col-span-3 flex justify-center">
-                    <MoneyDescriptionCard
-                        title="Total Balance"
-                        subTitle="Last 30 days"
-                        icon={<WalletIcon />}
-                        balance={12345.67}
-                        percentageChange={5.4}
-                        link="/balance-details"
-                    />
-                </div>
-                <div className="col-span-3 flex justify-center">
-                    <MoneyDescriptionCard
-                        title="Monthly Balance"
-                        subTitle="Last 30 days"
-                        icon={<WalletIcon />}
-                        balance={12345.67}
-                        percentageChange={-3.4}
-                        link="/balance-details"
-                    />
-                </div>
-                <div className="col-span-3 flex justify-center">
-                    <MoneyDescriptionCard
-                        title="Monthly Expenses"
-                        subTitle="Last 30 days"
-                        icon={<WalletIcon />}
-                        balance={12345.67}
-                        percentageChange={12.4}
-                        link="/balance-details"
-                    />
+        <div>
+            <SiteHeader />
+            <div className="flex flex-1 flex-col">
+                <div className="@container/main flex flex-1 flex-col gap-2">
+                    <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+                        <SectionCards />
+                        <div className="grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card">
+                            <div className="col-span-3">
+                                <div className="mb-10">
+                                    <ChartAreaInteractive />
+                                </div>
+                                <ActivityTable></ActivityTable>
+                            </div>
+                            <div className="col-span-1 align-center">
+                                <div className="mb-5">
+                                    <ChartPieLegend />
+                                </div>
+                                <ChartPieLegend />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
