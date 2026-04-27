@@ -12,10 +12,8 @@ import {
 import {
     TrendingUpIcon,
     TrendingDownIcon,
-    Ghost,
     ArrowRight,
 } from 'lucide-react'
-import { ChartRadialSimple } from './charts/chart-radial-simple'
 import { Button } from './ui/button'
 
 const cardsData = [

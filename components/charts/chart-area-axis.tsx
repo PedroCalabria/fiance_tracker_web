@@ -20,46 +20,31 @@ import {
 
 export const description = 'An area chart with axes'
 
-const chartData = [
-    { month: 'January', desktop: 186, mobile: 80 },
-    { month: 'February', desktop: 305, mobile: 200 },
-    { month: 'March', desktop: 237, mobile: 120 },
-    { month: 'April', desktop: 73, mobile: 190 },
-    { month: 'May', desktop: 209, mobile: 130 },
-    { month: 'June', desktop: 214, mobile: 140 },
-    { month: 'July', desktop: 186, mobile: 80 },
-    { month: 'August', desktop: 305, mobile: 200 },
-    { month: 'September', desktop: 237, mobile: 120 },
-    { month: 'October', desktop: 73, mobile: 190 },
-    { month: 'November', desktop: 209, mobile: 130 },
-    { month: 'December', desktop: 214, mobile: 140 },
-]
+interface chartAreaAxesProps {
+    title: string,
+    description: string,
+    config: ChartConfig,
+    data: Array<{
+        month: string,
+        desktop: number,
+        mobile: number,
+    }>
+};
 
-const chartConfig = {
-    desktop: {
-        label: 'Desktop',
-        color: 'var(--chart-1)',
-    },
-    mobile: {
-        label: 'Mobile',
-        color: 'var(--chart-2)',
-    },
-} satisfies ChartConfig
-
-export function ChartAreaAxes() {
+export function ChartAreaAxes({ title, description, config, data }: chartAreaAxesProps) {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Area Chart - Axes</CardTitle>
+                <CardTitle>{title}</CardTitle>
                 <CardDescription>
-                    Showing total visitors for the last 6 months
+                    {description}
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <ChartContainer config={chartConfig}>
+                <ChartContainer config={config} className='h-64 w-full'>
                     <AreaChart
                         accessibilityLayer
-                        data={chartData}
+                        data={data}
                         margin={{
                             left: -20,
                             right: 12,
@@ -102,19 +87,6 @@ export function ChartAreaAxes() {
                     </AreaChart>
                 </ChartContainer>
             </CardContent>
-            <CardFooter>
-                <div className="flex w-full items-start gap-2 text-sm">
-                    <div className="grid gap-2">
-                        <div className="flex items-center gap-2 leading-none font-medium">
-                            Trending up by 5.2% this month{' '}
-                            <TrendingUp className="h-4 w-4" />
-                        </div>
-                        <div className="flex items-center gap-2 leading-none text-muted-foreground">
-                            January - June 2024
-                        </div>
-                    </div>
-                </div>
-            </CardFooter>
         </Card>
     )
 }

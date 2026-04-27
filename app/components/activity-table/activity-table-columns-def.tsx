@@ -11,7 +11,6 @@ export const ActivityTableColumnsDef: ColumnDef<
     {
         accessorKey: 'product',
         header: 'Product',
-        enableHiding: false,
     },
     {
         accessorKey: 'amount',
