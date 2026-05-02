@@ -35,16 +35,9 @@ import {
     type SortingState,
     type VisibilityState,
 } from '@tanstack/react-table'
-import { z } from 'zod'
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
     Select,
@@ -62,22 +55,17 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
-    Columns3Icon,
-    ChevronDownIcon,
-    PlusIcon,
     ChevronsLeftIcon,
     ChevronLeftIcon,
     ChevronRightIcon,
     ChevronsRightIcon,
 } from 'lucide-react'
-import { activityTableSchema } from '@/app/components/activity-table/activity-table-schema'
 
-function DraggableRow({
+function DraggableRow<TData extends { id: number }>({
     row,
 }: {
-    row: Row<z.infer<typeof activityTableSchema>>
+    row: Row<TData>
 }) {
     const { transform, transition, setNodeRef, isDragging } = useSortable({
         id: row.original.id,
@@ -102,12 +90,12 @@ function DraggableRow({
     )
 }
 
-export function DataTable({
+export function DataTable<TData extends { id: number }>({
     columns,
     data: initialData,
 }: {
-    columns: ColumnDef<z.infer<typeof activityTableSchema>>[]
-    data: z.infer<typeof activityTableSchema>[]
+    columns: ColumnDef<TData>[]
+    data: TData[]
 }) {
     const [data, setData] = React.useState(() => initialData)
     const [rowSelection, setRowSelection] = React.useState({})
@@ -164,88 +152,14 @@ export function DataTable({
             })
         }
     }
+
+    React.useEffect(() => {
+        setData(initialData)
+    }, [initialData])
+
     return (
-        <Tabs
-            defaultValue="outline"
-            className="w-full flex-col justify-start gap-6"
-        >
-            <div className="flex items-center justify-between px-4 lg:px-6">
-                <Label htmlFor="view-selector" className="sr-only">
-                    View
-                </Label>
-                <Select
-                    defaultValue="mine"
-                    items={[
-                        { label: 'Mine', value: 'mine' },
-                        {
-                            label: 'Others',
-                            value: 'others',
-                        },
-                    ]}
-                >
-                    <SelectTrigger
-                        className="flex w-fit @4xl/main:hidden"
-                        size="sm"
-                        id="view-selector"
-                    >
-                        <SelectValue placeholder="Select a view" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectItem value="mine">Mine</SelectItem>
-                            <SelectItem value="others">Others</SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
-                <TabsList className="hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:bg-muted-foreground/30 **:data-[slot=badge]:px-1 @4xl/main:flex">
-                    <TabsTrigger value="mine">Mine</TabsTrigger>
-                    <TabsTrigger value="others">
-                        Others <Badge variant="secondary">3</Badge>
-                    </TabsTrigger>
-                </TabsList>
-                <div className="flex items-center gap-2">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger
-                            render={<Button variant="outline" size="sm" />}
-                        >
-                            <Columns3Icon data-icon="inline-start" />
-                            Columns
-                            <ChevronDownIcon data-icon="inline-end" />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-32">
-                            {table
-                                .getAllColumns()
-                                .filter(
-                                    (column) =>
-                                        typeof column.accessorFn !==
-                                            'undefined' && column.getCanHide(),
-                                )
-                                .map((column) => {
-                                    return (
-                                        <DropdownMenuCheckboxItem
-                                            key={column.id}
-                                            className="capitalize"
-                                            checked={column.getIsVisible()}
-                                            onCheckedChange={(value) =>
-                                                column.toggleVisibility(!!value)
-                                            }
-                                        >
-                                            {column.id}
-                                        </DropdownMenuCheckboxItem>
-                                    )
-                                })}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                    <Button variant="outline" size="sm">
-                        <PlusIcon />
-                        <span className="hidden lg:inline">Add Section</span>
-                    </Button>
-                </div>
-            </div>
-            <TabsContent
-                value="mine"
-                className="relative flex flex-col gap-4 overflow-auto"
-            >
+        <div className="w-full flex flex-col justify-start gap-6">
+            <div className="relative flex flex-col gap-4 overflow-auto">
                 <div className="overflow-hidden rounded-lg border">
                     <DndContext
                         collisionDetection={closestCenter}
@@ -257,25 +171,51 @@ export function DataTable({
                         <Table>
                             <TableHeader className="sticky top-0 z-10 bg-muted">
                                 {table.getHeaderGroups().map((headerGroup) => (
-                                    <TableRow key={headerGroup.id}>
-                                        {headerGroup.headers.map((header) => {
-                                            return (
-                                                <TableHead
-                                                    key={header.id}
-                                                    colSpan={header.colSpan}
-                                                >
-                                                    {header.isPlaceholder
-                                                        ? null
-                                                        : flexRender(
-                                                              header.column
-                                                                  .columnDef
-                                                                  .header,
-                                                              header.getContext(),
-                                                          )}
-                                                </TableHead>
-                                            )
-                                        })}
-                                    </TableRow>
+                                    <React.Fragment key={headerGroup.id}>
+                                        <TableRow>
+                                            {headerGroup.headers.map(
+                                                (header) => (
+                                                    <TableHead
+                                                        key={header.id}
+                                                        colSpan={header.colSpan}
+                                                    >
+                                                        {header.isPlaceholder
+                                                            ? null
+                                                            : flexRender(
+                                                                  header.column
+                                                                      .columnDef
+                                                                      .header,
+                                                                  header.getContext(),
+                                                              )}
+                                                    </TableHead>
+                                                ),
+                                            )}
+                                        </TableRow>
+                                        <TableRow>
+                                            {headerGroup.headers.map(
+                                                (header) => (
+                                                    <TableHead key={header.id}>
+                                                        {header.column.getCanFilter() ? (
+                                                            <Input
+                                                                placeholder="Filter..."
+                                                                value={
+                                                                    (header.column.getFilterValue() as string) ??
+                                                                    ''
+                                                                }
+                                                                onChange={(e) =>
+                                                                    header.column.setFilterValue(
+                                                                        e.target
+                                                                            .value,
+                                                                    )
+                                                                }
+                                                                className="h-7 text-xs"
+                                                            />
+                                                        ) : null}
+                                                    </TableHead>
+                                                ),
+                                            )}
+                                        </TableRow>
+                                    </React.Fragment>
                                 ))}
                             </TableHeader>
                             <TableBody className="**:data-[slot=table-cell]:first:w-8">
@@ -409,13 +349,7 @@ export function DataTable({
                         </div>
                     </div>
                 </div>
-            </TabsContent>
-            <TabsContent
-                value="others"
-                className="flex flex-col px-4 lg:px-6"
-            >
-                <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
-            </TabsContent>
-        </Tabs>
+            </div>
+        </div>
     )
 }

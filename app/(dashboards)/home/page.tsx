@@ -1,80 +1,74 @@
-import { ChartAreaInteractive } from '@/components/charts/chart-area-interactive';
-import { SectionCards } from '@/components/section-cards';
-import { SiteHeader } from '@/components/site-header';
-import { ChartPieLegend } from '@/components/charts/chart-pie-legend';
-import { ActivityTable } from '@/app/components/activity-table/activity-table';
-import { ChartAreaAxes } from '@/components/charts/chart-area-axis';
-import { ChartConfig } from '@/components/ui/chart';
+'use client'
+
+import { SectionCards } from '@/components/section-cards'
+import { SiteHeader } from '@/components/site-header'
+import { ChartPieLegend } from '@/components/charts/chart-pie-legend'
+import { ActivityTable } from '@/app/components/activity-table/activity-table'
+import { ChartAreaAxes } from '@/components/charts/chart-area-axis'
+import { ChartConfig } from '@/components/ui/chart'
+import { useGetExpensesByCategory, useGetExpensesByResponsibleParty, useGetYearlySummary } from '@/hooks/api/useDashboard'
+import { pieChartsColors } from '@/lib/consts/chartsColors'
 
 const chartConfig = {
-    desktop: {
-        label: 'Desktop',
+    myIncomes: {
+        label: 'My Incomes',
         color: 'var(--chart-1)',
     },
-    mobile: {
-        label: 'Mobile',
+    myExpenses: {
+        label: 'My Expenses',
         color: 'var(--chart-2)',
     },
-} satisfies ChartConfig
-
-const chartData = [
-    { month: 'January', desktop: 186, mobile: 80 },
-    { month: 'February', desktop: 305, mobile: 200 },
-    { month: 'March', desktop: 237, mobile: 120 },
-    { month: 'April', desktop: 73, mobile: 190 },
-    { month: 'May', desktop: 209, mobile: 130 },
-    { month: 'June', desktop: 214, mobile: 140 },
-    { month: 'July', desktop: 186, mobile: 80 },
-    { month: 'August', desktop: 305, mobile: 200 },
-    { month: 'September', desktop: 237, mobile: 120 },
-    { month: 'October', desktop: 73, mobile: 190 },
-    { month: 'November', desktop: 209, mobile: 130 },
-    { month: 'December', desktop: 214, mobile: 140 },
-]
-
-const expensesCategoryChartData = [
-    { key: 'chrome', value: 275, fill: 'var(--color-chrome)' },
-    { key: 'safari', value: 200, fill: 'var(--color-safari)' },
-    { key: 'firefox', value: 187, fill: 'var(--color-firefox)' },
-    { key: 'edge', value: 173, fill: 'var(--color-edge)' },
-    { key: 'other', value: 90, fill: 'var(--color-other)' },
-];
-
-const expensesPartiesChartData = [
-    { key: 'chrome', value: 275, fill: 'var(--color-chrome)' },
-    { key: 'safari', value: 200, fill: 'var(--color-safari)' },
-    { key: 'firefox', value: 187, fill: 'var(--color-firefox)' },
-    { key: 'edge', value: 173, fill: 'var(--color-edge)' },
-    { key: 'other', value: 90, fill: 'var(--color-other)' },
-];
-
-const expensesCategoryChartConfig = {
-    visitors: {
-        label: 'Visitors',
-    },
-    chrome: {
-        label: 'Chrome',
-        color: 'var(--chart-1)',
-    },
-    safari: {
-        label: 'Safari',
-        color: 'var(--chart-2)',
-    },
-    firefox: {
-        label: 'Firefox',
+    othersExpenses: {
+        label: 'Others Expenses',
         color: 'var(--chart-3)',
     },
-    edge: {
-        label: 'Edge',
+    totalExpenses: {
+        label: 'Total Expenses',
         color: 'var(--chart-4)',
-    },
-    other: {
-        label: 'Other',
-        color: 'var(--chart-5)',
     },
 } satisfies ChartConfig
 
 const GeneralView = () => {
+    const { data: yearlySummary } = useGetYearlySummary();
+    const { data: expensesByCategory } = useGetExpensesByCategory();
+    const { data: expensesByResponsibleParty } = useGetExpensesByResponsibleParty();
+
+    const expensesCategoryChartData =
+        expensesByCategory?.chartData.map((item, index) => ({
+            key: item.key,
+            value: item.value,
+            fill: pieChartsColors[index],
+        })) || []
+    
+    const expensesCategoriesChartLabels = expensesCategoryChartData.reduce(
+        (acc, item) => {
+            acc[item.key] = {
+                label: item.key,
+                color: item.fill,
+            }
+            return acc
+        },
+        {} as ChartConfig
+    )
+
+    const expensesPartiesChartData =
+        expensesByResponsibleParty?.chartData.map((item, index) => ({
+            key: item.key,
+            value: item.value,
+            fill: pieChartsColors[index],
+        })) || []
+
+    const expensesPartiesChartLabels = expensesPartiesChartData.reduce(
+        (acc, item) => {
+            acc[item.key] = {
+                label: item.key,
+                color: item.fill,
+            }
+            return acc
+        },
+        {} as ChartConfig,
+    )
+
     return (
         <div>
             <SiteHeader />
@@ -89,7 +83,10 @@ const GeneralView = () => {
                                         title="Incomes and Expenses"
                                         description="Monthly incomes and expenses for the last year"
                                         config={chartConfig}
-                                        data={chartData}
+                                        data={
+                                            yearlySummary?.yearlyFinancialSummary ||
+                                            []
+                                        }
                                     />
                                 </div>
                                 <ActivityTable></ActivityTable>
@@ -100,14 +97,14 @@ const GeneralView = () => {
                                         title="Expenses by Category"
                                         description="Distribution of expenses by category"
                                         data={expensesCategoryChartData}
-                                        config={expensesCategoryChartConfig}
+                                        config={expensesCategoriesChartLabels}
                                     />
                                 </div>
                                 <ChartPieLegend
                                     title="Expenses by Responsible Parties"
                                     description="Distribution of expenses by responsible parties"
                                     data={expensesPartiesChartData}
-                                    config={expensesCategoryChartConfig}
+                                    config={expensesPartiesChartLabels}
                                 />
                             </div>
                         </div>

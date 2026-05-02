@@ -17,6 +17,7 @@ import {
     ChartTooltipContent,
     type ChartConfig,
 } from '@/components/ui/chart'
+import { YearlySummary } from '@/lib/types/dashboard'
 
 export const description = 'An area chart with axes'
 
@@ -24,24 +25,19 @@ interface chartAreaAxesProps {
     title: string,
     description: string,
     config: ChartConfig,
-    data: Array<{
-        month: string,
-        desktop: number,
-        mobile: number,
-    }>
+    data: YearlySummary['yearlyFinancialSummary']
 };
 
 export function ChartAreaAxes({ title, description, config, data }: chartAreaAxesProps) {
+    console.log('Data for ChartAreaAxes:', data)
     return (
         <Card>
             <CardHeader>
                 <CardTitle>{title}</CardTitle>
-                <CardDescription>
-                    {description}
-                </CardDescription>
+                <CardDescription>{description}</CardDescription>
             </CardHeader>
             <CardContent>
-                <ChartContainer config={config} className='h-64 w-full'>
+                <ChartContainer config={config} className="h-64 w-full">
                     <AreaChart
                         accessibilityLayer
                         data={data}
@@ -56,33 +52,45 @@ export function ChartAreaAxes({ title, description, config, data }: chartAreaAxe
                             tickLine={false}
                             axisLine={false}
                             tickMargin={8}
-                            tickFormatter={(value) => value.slice(0, 3)}
+                            tickFormatter={value => value}
                         />
                         <YAxis
                             tickLine={false}
                             axisLine={false}
                             tickMargin={8}
-                            tickCount={3}
+                            tickCount={5}
                         />
                         <ChartTooltip
                             cursor={false}
                             content={<ChartTooltipContent />}
                         />
                         <Area
-                            dataKey="mobile"
+                            dataKey="myIncomes"
                             type="natural"
-                            fill="var(--color-mobile)"
+                            fill="var(--color-myIncomes)"
                             fillOpacity={0.4}
-                            stroke="var(--color-mobile)"
-                            stackId="a"
+                            stroke="var(--color-myIncomes)"
                         />
                         <Area
-                            dataKey="desktop"
+                            dataKey="myExpenses"
                             type="natural"
-                            fill="var(--color-desktop)"
+                            fill="var(--color-myExpenses)"
                             fillOpacity={0.4}
-                            stroke="var(--color-desktop)"
-                            stackId="a"
+                            stroke="var(--color-myExpenses)"
+                        />
+                        <Area
+                            dataKey="othersExpenses"
+                            type="natural"
+                            fill="var(--color-othersExpenses)"
+                            fillOpacity={0.4}
+                            stroke="var(--color-othersExpenses)"
+                        />
+                        <Area
+                            dataKey="totalExpenses"
+                            type="natural"
+                            fill="var(--color-totalExpenses)"
+                            fillOpacity={0.4}
+                            stroke="var(--color-totalExpenses)"
                         />
                     </AreaChart>
                 </ChartContainer>

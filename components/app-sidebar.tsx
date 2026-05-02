@@ -21,7 +21,7 @@ const data = {
     user: {
         name: 'shadcn',
         email: 'm@example.com',
-        avatar: '/avatars/shadcn.jpg',
+        avatar: '', // Placeholder - será substituído por dados reais da API
     },
     navMain: [
         {
