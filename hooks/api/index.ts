@@ -3,5 +3,5 @@
  * Centralized export for all API hooks
  */
 
-export * from './useTransactions'
+export * from './useAuth'
 export * from './useDashboard'
