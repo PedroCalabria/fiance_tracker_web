@@ -14,7 +14,7 @@ import type {
     ExpensesByResponsibleParty,
     YearlySummary,
 } from '@/lib/types/dashboard'
-import { AccountsActivity } from '@/app/components/activity-table/activity-table-schema'
+import { AccountsActivity } from '@/components/activity-table/activity-table-schema'
 
 // Query Keys
 export const dashboardKeys = {
@@ -28,9 +28,6 @@ export const dashboardKeys = {
         [...dashboardKeys.all, 'expensesByResponsibleParty'] as const,
 }
 
-/**
- * Fetch dashboard summary
- */
 export function useDashboardSummary() {
     return useQuery({
         queryKey: dashboardKeys.summary(),

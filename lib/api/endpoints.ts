@@ -17,6 +17,25 @@ export const ENDPOINTS = {
         me: '/api/User/me',
     },
 
+    // Transactions
+    transactions: {
+        allTransactions: '/api/Transactions/getAllTransactions',
+        batchUpdate: '/api/Transactions/batchUpdate',
+        batchCreate: '/api/Transactions/batchCreate',
+    },
+
+    // Cards
+    cards: {
+        base: '/api/cards',
+        byId: (id: number | string) => `/api/cards/${id}`,
+    },
+
+    // Savings
+    savings: {
+        base: '/api/savings',
+        byId: (id: number | string) => `/api/savings/${id}`,
+    },
+
     // Dashboard
     dashboard: {
         summary: '/api/Balance/getFinancialSummaryData',

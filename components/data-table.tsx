@@ -82,7 +82,10 @@ function DraggableRow<TData extends { id: number }>({
             }}
         >
             {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
+                <TableCell
+                    key={cell.id}
+                    style={{ width: cell.column.getSize() }}
+                >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
             ))}
@@ -178,6 +181,9 @@ export function DataTable<TData extends { id: number }>({
                                                     <TableHead
                                                         key={header.id}
                                                         colSpan={header.colSpan}
+                                                        style={{
+                                                            width: header.getSize(),
+                                                        }}
                                                     >
                                                         {header.isPlaceholder
                                                             ? null
@@ -194,7 +200,13 @@ export function DataTable<TData extends { id: number }>({
                                         <TableRow>
                                             {headerGroup.headers.map(
                                                 (header) => (
-                                                    <TableHead key={header.id}>
+                                                    <TableHead
+                                                        key={header.id}
+                                                        className="pl-0.5 pr-4"
+                                                        style={{
+                                                            width: header.getSize(),
+                                                        }}
+                                                    >
                                                         {header.column.getCanFilter() ? (
                                                             <Input
                                                                 placeholder="Filter..."
@@ -245,12 +257,7 @@ export function DataTable<TData extends { id: number }>({
                         </Table>
                     </DndContext>
                 </div>
-                <div className="flex items-center justify-between px-4">
-                    <div className="hidden flex-1 text-sm text-muted-foreground lg:flex">
-                        {table.getFilteredSelectedRowModel().rows.length} of{' '}
-                        {table.getFilteredRowModel().rows.length} row(s)
-                        selected.
-                    </div>
+                <div className="flex items-center justify-between px-4 ml-auto">
                     <div className="flex w-full items-center gap-8 lg:w-fit">
                         <div className="hidden items-center gap-2 lg:flex">
                             <Label

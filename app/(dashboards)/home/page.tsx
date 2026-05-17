@@ -3,10 +3,14 @@
 import { SectionCards } from '@/components/section-cards'
 import { SiteHeader } from '@/components/site-header'
 import { ChartPieLegend } from '@/components/charts/chart-pie-legend'
-import { ActivityTable } from '@/app/components/activity-table/activity-table'
+import { ActivityTable } from '@/components/activity-table/activity-table'
 import { ChartAreaAxes } from '@/components/charts/chart-area-axis'
 import { ChartConfig } from '@/components/ui/chart'
-import { useGetExpensesByCategory, useGetExpensesByResponsibleParty, useGetYearlySummary } from '@/hooks/api/useDashboard'
+import {
+    useGetExpensesByCategory,
+    useGetExpensesByResponsibleParty,
+    useGetYearlySummary,
+} from '@/hooks/api/useDashboard'
 import { pieChartsColors } from '@/lib/consts/chartsColors'
 
 const chartConfig = {
@@ -29,9 +33,10 @@ const chartConfig = {
 } satisfies ChartConfig
 
 const GeneralView = () => {
-    const { data: yearlySummary } = useGetYearlySummary();
-    const { data: expensesByCategory } = useGetExpensesByCategory();
-    const { data: expensesByResponsibleParty } = useGetExpensesByResponsibleParty();
+    const { data: yearlySummary } = useGetYearlySummary()
+    const { data: expensesByCategory } = useGetExpensesByCategory()
+    const { data: expensesByResponsibleParty } =
+        useGetExpensesByResponsibleParty()
 
     const expensesCategoryChartData =
         expensesByCategory?.chartData.map((item, index) => ({
@@ -39,7 +44,7 @@ const GeneralView = () => {
             value: item.value,
             fill: pieChartsColors[index],
         })) || []
-    
+
     const expensesCategoriesChartLabels = expensesCategoryChartData.reduce(
         (acc, item) => {
             acc[item.key] = {
@@ -48,7 +53,7 @@ const GeneralView = () => {
             }
             return acc
         },
-        {} as ChartConfig
+        {} as ChartConfig,
     )
 
     const expensesPartiesChartData =
@@ -71,7 +76,7 @@ const GeneralView = () => {
 
     return (
         <div>
-            <SiteHeader />
+            <SiteHeader title="Welcome, User!" />
             <div className="flex flex-1 flex-col">
                 <div className="@container/main flex flex-1 flex-col gap-2">
                     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
